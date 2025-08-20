@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Country Information Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="overlay fade-in">
+        <h1 class="title">🌎 Country Information Tool</h1>
+          <!-- Back to Dashboard Button -->
+        <div style="text-align:center; margin:15px 0;"> 
+        <a href="{{ url_for('dashboard') }}" class="btn-back">
+        ← Back to Dashboard
+        </a>
+        </div>
+
+        <p class="welcome">Welcome, {{ session['user'] }} | 
+           <form action="{{ url_for('logout') }}" method="POST" style="display:inline;">
+               <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;">Logout</button>
+           </form>
+        </p>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <!-- Search Box -->
+        <form method="POST" action="{{ url_for('index') }}" class="search-box">
+            <input type="text" name="query" placeholder="Enter country or region name..." required>
+            <button type="submit" class="btn-animate">Search</button>
+        </form>
+
+        {% if country_data %}
+            <div class="results fade-in">
+                {% if is_region %}
+                    <div class="grid region-grid">
+                        {% for country in country_data %}
+                            <div class="card small zoom-in">
+                                <img src="{{ country.flag }}" alt="Flag">
+                                <h2>{{ country.name }}</h2>
+                                <p><b>Capital:</b> {{ country.capital }}</p>
+                                <p><b>Population:</b> {{ country.population }}</p>
+                                <p><b>Region:</b> {{ country.region }}</p>
+
+                                <a href="{{ url_for('getdetail', name=country.name) }}" class="details-btn btn-animate">
+                                    🔍 View Details
+                                </a>
+
+                                <!-- Add to Favourites Button -->
+                                <form action="{{ url_for('add_favourite') }}" method="POST">
+                                    <input type="hidden" name="country_name" value="{{ country.name }}">
+                                    <button type="submit" class="btn-animate">⭐ Add to Favourites</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="card single zoom-in">
+                        <div class="single-flag">
+                            <img src="{{ country_data.flag }}" alt="Flag">
+                        </div>
+                        <div class="single-info">
+                            <h2>{{ country_data.name }}</h2>
+                            <p><b>Official Name:</b> {{ country_data.official_name }}</p>
+                            <p><b>Capital:</b> {{ country_data.capital }}</p>
+                            <p><b>Population:</b> {{ country_data.population }}</p>
+                            <p><b>Region:</b> {{ country_data.region }}</p>
+                            <p><b>Subregion:</b> {{ country_data.subregion }}</p>
+                            <p><b>Languages:</b> {{ country_data.languages }}</p>
+                            <p><b>Borders:</b> {{ country_data.borders }}</p>
+                            <p><b>Time Zones:</b> {{ country_data.timezones }}</p>
+                            <p><b>Currencies:</b> {{ country_data.currencies }}</p>
+                            <a href="{{ country_data.map }}" target="_blank" class="btn-animate">🌐 View on Google Maps</a>
+                        </div>
+
+                        <!-- Add to Favourites Button -->
+                        <form action="{{ url_for('add_favourite') }}" method="POST">
+                            <input type="hidden" name="country_name" value="{{ country_data.name }}">
+                            <button type="submit" class="btn-animate">⭐ Add to Favourites</button>
+                        </form>
+
+                        <!-- Famous places -->
+                        {% if country_data.famous_places %}
+                            <h3 class="section-title">🏛 Famous Places</h3>
+                            <div class="places-grid">
+                                {% for place in country_data.famous_places %}
+                                    <div class="place-card zoom-in">
+                                        <h4>{{ place.name }}</h4>
+                                        {% if place.image %}
+                                            <img src="{{ place.image }}" alt="{{ place.name }}" class="place-img">
+                                        {% endif %}
+                                        <p>{{ place.detail }}</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p>No famous places found.</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <!-- Pagination -->
+        {% if is_region and total_pages > 1 %}
+            <div class="pagination fade-in">
+                {% if page > 1 %}
+                    <a href="{{ url_for('index', page=page-1) }}" class="page-btn btn-animate">⬅ Previous</a>
+                {% endif %}
+                <span class="page-info">Page {{ page }} of {{ total_pages }}</span>
+                {% if page < total_pages %}
+                    <a href="{{ url_for('index', page=page+1) }}" class="page-btn btn-animate">Next ➡</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

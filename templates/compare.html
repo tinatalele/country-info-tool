@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Compare Countries</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    
+    <style>
+        .compare-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .country-card {
+            flex: 1;
+            min-width: 300px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        .country-card img {
+            max-width: 150px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .compare-form {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .compare-form input {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        .compare-form button {
+            padding: 10px 20px;
+            border: none;
+            background: #007BFF;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .compare-form button:hover {
+            background: #0056b3;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .error {
+            text-align: center;
+            color: red;
+            margin-top: 15px;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>🌍 Compare Two Countries</h1>
+
+    <!-- Back to Dashboard Button -->
+    <div style="text-align:center; margin:15px 0;"> 
+    <a href="{{ url_for('dashboard') }}" class="btn-back">
+    ← Back to Dashboard
+    </a>
+    </div>
+
+    <!-- Form -->
+    <div class="compare-form">
+        <form method="POST">
+            <input type="text" name="country1" placeholder="Enter first country" required>
+            <input type="text" name="country2" placeholder="Enter second country" required>
+            <button type="submit">Compare</button>
+        </form>
+    </div>
+
+    <!-- Error message -->
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <!-- Results -->
+    {% if country1 and country2 %}
+    <div class="compare-container">
+        <div class="country-card">
+            <h2>{{ country1['official_name'] }}</h2>
+            <img src="{{ country1['flag'] }}" alt="{{ country1['official_name'] }} Flag">
+            <p><b>Capital:</b> {{ country1['capital'] }}</p>
+            <p><b>Region:</b> {{ country1['region'] }}</p>
+            <p><b>Subregion:</b> {{ country1['subregion'] }}</p>
+            <p><b>Population:</b> {{ country1['population'] }}</p>
+            <p><b>Languages:</b> {{ country1['languages'] }}</p>
+            <p><b>Currency:</b> {{ country1['currency'] }}</p>
+            <p><b>Time Zone:</b> {{ country1['timezone'] }}</p>
+            <p><b>Borders:</b> {{ country1['borders'] }}</p>
+            <p><b>Google Map:</b> <a href="{{ country1['google_map'] }}" target="_blank">View Map</a></p>
+        </div>
+
+        <div class="country-card">
+            <h2>{{ country2['official_name'] }}</h2>
+            <img src="{{ country2['flag'] }}" alt="{{ country2['official_name'] }} Flag">
+            <p><b>Capital:</b> {{ country2['capital'] }}</p>
+            <p><b>Region:</b> {{ country2['region'] }}</p>
+            <p><b>Subregion:</b> {{ country2['subregion'] }}</p>
+            <p><b>Population:</b> {{ country2['population'] }}</p>
+            <p><b>Languages:</b> {{ country2['languages'] }}</p>
+            <p><b>Currency:</b> {{ country2['currency'] }}</p>
+            <p><b>Time Zone:</b> {{ country2['timezone'] }}</p>
+            <p><b>Borders:</b> {{ country2['borders'] }}</p>
+            <p><b>Google Map:</b> <a href="{{ country2['google_map'] }}" target="_blank">View Map</a></p>
+        </div>
+    </div>
+    {% endif %}
+</body>
+</html>
